@@ -1,0 +1,19 @@
+RewriteEngine on
+RewriteCond %{THE_REQUEST} /([^.]+)\.php [NC]
+RewriteRule ^ /%1 [NC,L,R]
+
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^ %{REQUEST_URI}.php [NC,L]
+
+#Change default directory page
+DirectoryIndex home.php home.html index.php index.html
+
+#Prevent viewing of .htaccess file
+<Files .htaccess>
+    order allow,deny
+    deny from all
+</Files>
+
+#Prevent directory listings
+Options All -Indexes
+ 
