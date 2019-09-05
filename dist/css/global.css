@@ -155,3 +155,7 @@
         display: table-row;
     }
 } */
+
+.bg-voto10 {
+    background-image: url(../../dist/img/voto-10.gif);
+}

@@ -12,7 +12,7 @@ class setting
     Maggiori informazioni sulla wiki (link)
     */
     public $mysql_ip_private_key = "localhost";
-    public $mysql_user_private_key = "user";
+    public $mysql_user_private_key = "registro_elettronico";
     public $mysql_password_private_key = "password";
     public $mysql_database_private_key = "registro_elettronico";   
 
@@ -41,6 +41,9 @@ class axios extends setting
     public $student; //Studente selezionato [passare solo un array con un solo studente]
 
     public $postREFamilyData; //Vari input inseriti a caso nella pagina (perché axios non sa fare niente)
+
+    public $QuadrimestreFT; //Indica il periodo dell' anno, se è invalido esplode (es. FT01, FT02...)
+    public $QuadrimestreFTAll; //Indica tutti i periodi dell' anno [array]
 
     public function checkKey()
     {
@@ -376,6 +379,32 @@ class axios extends setting
             $aluName = str_replace(chr( 194 ).chr( 160 ), '', $value->children()[1]->text()); //Il nome contiene un carattere unicode (\u00a0 -> spazio) che va convertito prima di rimpiazzarlo nella stringa del nome
             $aluninfoExplode = explode("\"", $aluninfo); //Esplodi la stringa su " [stringa tipo: AluSelectedInFamily("0","1","00006200")] 
             $output[] = array('num' => $aluninfoExplode[1], 'qualcosa' => $aluninfoExplode[3], 'id' => $aluninfoExplode[5], 'name' => $aluName); //Salva nell'array i dati dell'alunno
+        }
+        return $output;
+    }
+
+    public function getPeriodYear()
+    {
+        //Ottieni il numero dello studente
+        $ch = curl_init("https://family.axioscloud.it/Secret/REFamily.aspx");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        curl_setopt($ch, CURLOPT_REFERER, "https://family.axioscloud.it/Secret/RELogin.aspx"); //link da cui provieni
+
+        curl_setopt($ch, CURLOPT_COOKIE, "__AntiXsrfToken=" . $this->cookies['__AntiXsrfToken'] . "; ASP.NET_SessionId=" . $this->cookies['ASP.NET_SessionId']);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $document = new Document($result);
+
+        $periodi = $document->find('#ContentPlaceHolderMenu_ddlFT')[0]; //Trova La lista dei periodi dell' anno
+        foreach ($periodi->find('option') as $key => $value) { //Per ogni opzione nel select
+            if (!empty($value->getAttribute('selected'))) {
+                $output["selected"] = $value->getAttribute('value'); //ottieni il value (es: FT01, FT02...)
+            } else {
+                $output[] = $value->getAttribute('value'); //ottieni il value (es: FT01, FT02...)
+            }      
         }
         return $output;
     }
@@ -723,6 +752,8 @@ class axios extends setting
             trim($this->postREFamilyData['name'][1][2], "\"") => trim($this->postREFamilyData['value'][1][2], "\""),
             '__EVENTARGUMENT' => "RED",
             '__EVENTTARGET' => "FAMILY",
+            // Quadrimestre
+            'ctl00$ContentPlaceHolderMenu$ddlFT' => $this->QuadrimestreFT,
             //Dati dell'alunno
             'ctl00$ContentPlaceHolderBody$txtIDAluSelected' => $this->student['num'],
             'ctl00$ContentPlaceHolderBody$txtAluSelected' => $this->student['id'],
@@ -776,7 +807,7 @@ class axios extends setting
     {
         //Vai alla pagina delle della tabella assenza e invia il numero dello studente
         //Abilitazione delle comunicazioni
-        $base64id = base64_encode($this->student['id']."|AXIOSMERDA"); // base64 da inviare con l' id dello studente seguito da "|FT01"
+        $base64id = base64_encode($this->student['id']."|".$this->QuadrimestreFT); // base64 da inviare con l' id dello studente seguito da "|FT01"
         $ch = curl_init("https://family.axioscloud.it/Secret/APP_Ajax_Get.aspx?Action=FAMILY_REGISTRO_DOCENTI_GRIGLIA&Others=".$base64id);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 1);
@@ -786,6 +817,10 @@ class axios extends setting
         curl_setopt($ch, CURLOPT_COOKIE, "__AntiXsrfToken=" . $this->cookies['__AntiXsrfToken'] . "; ASP.NET_SessionId=" . $this->cookies['ASP.NET_SessionId']);
 
         curl_setopt($ch, CURLOPT_POST, 1);
+        $post = [
+            // Quadrimestre
+            'ctl00$ContentPlaceHolderMenu$ddlFT' => $this->QuadrimestreFT,
+        ];
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 
@@ -1119,30 +1154,36 @@ class axios extends setting
     {
         //Vai alla pagina delle della tabella assenza e invia il numero dello studente
         //Abilitazione delle comunicazioni
-        $base64id = base64_encode($this->student['id']."|AXIOSMERDA"); // base64 da inviare con l' id dello studente seguito da "|FT01"
-        $ch = curl_init("https://family.axioscloud.it/Secret/APP_Ajax_Get.aspx?Action=FAMILY_REGISTRO_DOCENTI_GRIGLIA&Others=".$base64id);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-
-        curl_setopt($ch, CURLOPT_REFERER, "https://family.axioscloud.it/Secret/RELogin.aspx"); //link da cui provieni
-
-        curl_setopt($ch, CURLOPT_COOKIE, "__AntiXsrfToken=" . $this->cookies['__AntiXsrfToken'] . "; ASP.NET_SessionId=" . $this->cookies['ASP.NET_SessionId']);
-
-        curl_setopt($ch, CURLOPT_POST, 1);
-
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-
-        $document = new Document($result);
-        $posts = $document->find('.assenza'); //trva tutto cio` che ha la casse assenza
-
         $assenze = 0; //Imposta le ore di assenza a 0
-        foreach ($posts as $key => $value) { //ogni elemento trovato ottieni il testo
-            $ora_assenza = str_replace("A", "", $value->text()); //Rimpiazza tutte le A nelle ore per avere un intero
-            $assenze += $ora_assenza; //Somma alle ore di assenza
+        foreach ($this->QuadrimestreFTAll as $key => $value) { //Per ogni periodo dell' anno aggingi le ore di assenza
+            $base64id = base64_encode($this->student['id']."|".$value); // base64 da inviare con l' id dello studente seguito da "|FTXX"
+            $ch = curl_init("https://family.axioscloud.it/Secret/APP_Ajax_Get.aspx?Action=FAMILY_REGISTRO_DOCENTI_GRIGLIA&Others=".$base64id);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 1);
+
+            curl_setopt($ch, CURLOPT_REFERER, "https://family.axioscloud.it/Secret/RELogin.aspx"); //link da cui provieni
+
+            curl_setopt($ch, CURLOPT_COOKIE, "__AntiXsrfToken=" . $this->cookies['__AntiXsrfToken'] . "; ASP.NET_SessionId=" . $this->cookies['ASP.NET_SessionId']);
+
+            curl_setopt($ch, CURLOPT_POST, 1);
+            $post = [
+                // Quadrimestre
+                'ctl00$ContentPlaceHolderMenu$ddlFT' => $value,
+            ];
+
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+
+            $document = new Document($result);
+            $posts = $document->find('.assenza'); //trva tutto cio` che ha la casse assenza
+
+            foreach ($posts as $key => $value) { //ogni elemento trovato ottieni il testo
+                $ora_assenza = str_replace("A", "", $value->text()); //Rimpiazza tutte le A nelle ore per avere un intero
+                $assenze += $ora_assenza; //Somma alle ore di assenza
+            }
         }
 
         return $assenze;

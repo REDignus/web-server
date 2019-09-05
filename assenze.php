@@ -4,6 +4,8 @@
     $axios = new axios;
     
     $axios->postREFamilyData = $_SESSION["getPostREFamily"];
+    $axios->QuadrimestreFT = $_COOKIE["QuadrimestreFT"];
+    $axios->QuadrimestreFTAll = $_SESSION["QuadrimestreFTAll"];
     $axios->student = $_SESSION["getStudentId"][$_COOKIE['studentNumber']];
     $axios->cookies = $_SESSION["cookies"];
     
@@ -33,6 +35,7 @@
                             <table class="table">
                                 <thead class="thead-dark">
                                     <tr>
+																				<th scope="col">N</th>
                                         <th scope="col">Data</th>
                                         <th scope="col">Tipo</th>
                                         <th scope="col">Giustificata</th>
@@ -42,7 +45,8 @@
                                     <?php
                                         foreach ($result as $key => $value) {
                                             echo '<tr>
-                                                                            <th>' . $value["date"] . '</th>
+                                                                            <th>' . ($key+1) . '</th>
+																																						<td>' . $value["date"] . '</td>
                                                                             <td>' . $value["type"] . '</td>
                                                                             <td>' . $value["justified"] . '</td>
                                                                         </tr>';

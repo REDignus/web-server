@@ -20,4 +20,3 @@
 <link rel="stylesheet" href="dist/css/sidebar.css">    
 <!-- Global CSS -->
 <link href="dist/css/global.css" rel="stylesheet">
-<!-- <link rel="stylesheet" href="https://pastebin.com/raw/V5dfZnfE"> -->

@@ -4,10 +4,10 @@
     $axios = new axios;
     
     $axios->postREFamilyData = $_SESSION["getPostREFamily"];
+    $axios->QuadrimestreFT = $_COOKIE["QuadrimestreFT"];
+    $axios->QuadrimestreFTAll = $_SESSION["QuadrimestreFTAll"];
     $axios->student = $_SESSION["getStudentId"][$_COOKIE['studentNumber']];
     $axios->cookies = $_SESSION["cookies"];
-    
-    $result = $axios->getVote();
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,11 +29,14 @@
             <div id="content">
                 <?php include "include/navbar.php"; ?>
                 <div class="container-fluid">
-                    <?php if ($_COOKIE['graficavoti'] == "tabella" || empty($_COOKIE['graficavoti'])): ?>
+                    <?php if ($_COOKIE['graficavoti'] == "1"): 
+                        $result = $axios->getVote();
+                    ?>
                     <br>
                     <div class="jumbotron">
                         <div class="text-center">
                             <a href="opzioni" class="text-right badge badge-pill badge-secondary">Prova la nuova versione (BETA)</a>
+                            <a href="opzioni#QuadrimestreFT" class="text-right badge badge-pill badge-primary">Cambia periodo dell'anno</a>
                         </div>
                         <br>
                         <form method="get">
@@ -247,13 +250,13 @@
                     </div>
                 </div>
                 <?php include "include/footer.php"; ?>    
-                <?php endif; ?>
-                <?php if ($_COOKIE['graficavoti'] == "scheda"): ?>
+                <?php else: ?>
                 <div class="container-fluid">
                     <br>
                     <div class="jumbotron">
                         
                         <div class="text-center">
+                            <a href="opzioni#QuadrimestreFT" class="text-right badge badge-pill badge-primary">Cambia periodo dell'anno</a>
                             <a href="opzioni" class="text-right badge badge-pill badge-secondary">Torna alla vecchia versione</a>
                         </div>
                         <br>
@@ -298,8 +301,12 @@
                             data.forEach(element => {
                                 numcollaps++;
                                 // Imposta il colore del voto
-                                if (null === element.realVote) {
+                                if (null === element.realVote ) {
                                     var colorevoto = "bg-primary";
+                                } else if (element.realVote.replace(',', '.') == 10 && (null == $.cookie("votifunmode") || $.parseJSON($.cookie("votifunmode")))) {
+                                    console.log(null == $.cookie("votifunmode") || $.parseJSON($.cookie("votifunmode")));
+                                    
+                                    var colorevoto = "bg-voto10";
                                 } else if (element.realVote.replace(',', '.') >= 6) {
                                     var colorevoto = "bg-success";
                                 } else {
@@ -352,15 +359,23 @@
                         $("#votimenu").removeClass("active");
 
                         var numcollaps = 0;
+                        var numtot = 0;
                         var tot = 0;
                         $.getJSON('api/ajax/mediaMateria', function(data) {
                             // Per ogni voto
                             $('#votilista').html('<br>');
                             data.forEach(element => {
                                 numcollaps++;
+                                numtot++;
+
                                 // Imposta il colore del voto
-                                if (null === element.average) {
+                                if ("" === element.average) {
                                     var colorevoto = "bg-primary";
+                                    element.average = "N/A"
+                                    numtot--;
+                                } else if (element.average.replace(',', '.') == 10 && (null == $.cookie("votifunmode") || $.parseJSON($.cookie("votifunmode")))) {
+                                    var colorevoto = "bg-voto10";
+                                    tot += parseFloat(element.average.replace(',', '.'));
                                 } else if (element.average.replace(',', '.') >= 6) {
                                     var colorevoto = "bg-success";
                                     tot += parseFloat(element.average.replace(',', '.'));
@@ -391,9 +406,10 @@
                                 '</div>'+
                                 '<hr style="border-top: 1px solid rgb(0, 0, 0, 0.5)">');
                             });
-                            var media = Math.round(tot/numcollaps * 100) / 100; //Calcolo media
-                            if (null === media) {
+                            var media = Math.round(tot/numtot * 100) / 100; //Calcolo media
+                            if ("" === media || isNaN(media) || null === media) {
                                 var colorevoto = "bg-primary";
+                                media = "N/A";
                             } else if (media >= 6) {
                                 var colorevoto = "bg-success";
                             } else {

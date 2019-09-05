@@ -45,10 +45,10 @@
     </ul>
     <ul class="list-unstyled CTAs">
         <li>
-            <a href="#" class="download"><i class="fab fa-github"></i>GitHub</a>
+            <a href="https://github.com/REDignus" tatget="_blank" class="download"><i class="fab fa-github"></i>GitHub</a>
         </li>
         <li>
-            <a href="#" class="article"><i class="fab fa-telegram-plane"></i>Contatti</a>
+            <a href="https://t.me/REDignusHelpBot" tatget="_blank" class="article"><i class="fab fa-telegram-plane"></i>Contatti</a>
         </li>
         <li>
             <a href="#" class="article"><i class="fas fa-question"></i>FAQ</a>

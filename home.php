@@ -4,6 +4,8 @@
     $axios = new axios;
     
     $axios->postREFamilyData = $_SESSION["getPostREFamily"];
+    $axios->QuadrimestreFT = $_COOKIE["QuadrimestreFT"];
+    $axios->QuadrimestreFTAll = $_SESSION["QuadrimestreFTAll"];
     $axios->student = $_SESSION["getStudentId"][$_COOKIE['studentNumber']];
     $axios->cookies = $_SESSION["cookies"];
     
