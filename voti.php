@@ -318,6 +318,14 @@
                                 } else {
                                     asterisco = '<span style="color: red;">*</span>';
                                 }
+                                
+                                if ("" === element.target) {
+                                    element.target = "Nessuno";
+                                }
+
+                                if (null === element.realVote) {
+                                    element.target = "Nessuno";
+                                }
 
                                 // Salva le informazioni precedenti
                                 var precedente = $('#votilista').html();
@@ -331,7 +339,7 @@
                                                 '<h5> '+element.topic+' </h5>'+
                                                 '<div id="collapse'+numcollaps+'" class="collapse">'+
                                                     '<p> '+element.comment+' </p>'+
-                                                    '<p><small class="text-body">Voto: '+element.realVote+' <br> '+element.teacher+' </small></p>'+
+                                                    '<p><small class="text-body">Voto: '+element.realVote+' <br>Obiettivo: '+element.target+' <br> '+element.teacher+' </small></p>'+
                                                 '</div>'+
                                             '</div>'+
                                         '</div>'+

@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: text/plane; charset=utf-8');
+
 // server should keep session data for AT LEAST 1 hour
 ini_set('session.gc_maxlifetime', 7200);
 

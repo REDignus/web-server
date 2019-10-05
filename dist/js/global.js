@@ -26,7 +26,7 @@ if (isTouchDevice() === true) {
 
 //Se il tasto #sidebarCollapse è premuto toogle sidebar
 $(document).ready(function () {
-    $('#sidebarCollapse').on('click', function () {
+    $('.sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
         $('html, body').toggleClass('disable-x-scroll');
         $('.swipe-area').toggleClass('swipe-area-activate');
@@ -45,8 +45,7 @@ $(".swipe-area").click(function () {
         $('#sidebar').addClass('active');
         $('html, body').removeClass('disable-x-scroll');
         $('.swipe-area').removeClass('swipe-area-activate');
-    }
-    
+    }   
 });
 $(".swipe-area").swipe({
     swipeStatus: function (event, phase, direction, distance, duration, fingers) {

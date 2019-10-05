@@ -19,6 +19,7 @@ $axios = new axios;
     <link href="dist/css/login.css" rel="stylesheet">
 
     <?php
+      unset($_COOKIE["QuadrimestreFT"]);
       $_POST["cfscuola"] = $_GET["cfscuola"];
 
       if ((!empty($_POST["cfscuola"])) && (!empty($_POST["axiosuser"])) && (!empty($_POST["axiospassword"]))) { //Controlla accesso normale
@@ -47,7 +48,7 @@ $axios = new axios;
               setcookie("studentNumber", 0, time() + 31536000);
             }
             if (empty($_COOKIE['QuadrimestreFT'])){ //imposta il periodo dell'anno predefinito se non impostato
-              setcookie("QuadrimestreFT", $_SESSION["QuadrimestreFTAll"]["selected"], time() + 31536000);
+              setcookie("QuadrimestreFT", $_SESSION["QuadrimestreFTAll"]["selected"], time() + 604800);
             }
 
           if (!empty($_GET["page"])){
@@ -82,7 +83,7 @@ $axios = new axios;
             setcookie("studentNumber", 0, time() + 31536000);
           }
           if (empty($_COOKIE['QuadrimestreFT'])){ //imposta il periodo dell'anno predefinito se non impostato
-              setcookie("QuadrimestreFT", $_SESSION["QuadrimestreFTAll"]["selected"], time() + 31536000);
+              setcookie("QuadrimestreFT", $_SESSION["QuadrimestreFTAll"]["selected"], time() + 604800); //Imposta il FT per una settimana
           }
 
           if (!empty($_GET["page"])){

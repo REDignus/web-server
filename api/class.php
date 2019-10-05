@@ -788,10 +788,13 @@ class axios extends setting
                         $output[$counter]["realVote"] = explode("Valore: ", $value->title)[1];//Ottieni il voto reale
                         $output[$counter]["vote"] = $value->text();//Ottieni il voto
                         break;
-                    case '4'://Commento
+                    case '4'://Obiettivi
+                        $output[$counter]["target"] = $value->text();//Ottieni gli Obiettivi
+                        break;
+                    case '5'://Commento
                         $output[$counter]["comment"] = $value->text();//Ottieni il commento
                         break;
-                    case '5'://Professore
+                    case '6'://Professore
                         $output[$counter]["teacher"] = $value->text();//Ottieni il nome del professore
                         break;
                 }
@@ -1187,6 +1190,167 @@ class axios extends setting
         }
 
         return $assenze;
+    }
+
+    public function getSchedule()
+    {
+        //Vai alla pagina delle assenze e invia il numero dello studente
+        $ch = curl_init("https://family.axioscloud.it/Secret/REFamily.aspx");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+
+        curl_setopt($ch, CURLOPT_REFERER, "https://family.axioscloud.it/Secret/RELogin.aspx"); //link da cui provieni
+
+        curl_setopt($ch, CURLOPT_COOKIE, "__AntiXsrfToken=" . $this->cookies['__AntiXsrfToken'] . "; ASP.NET_SessionId=" . $this->cookies['ASP.NET_SessionId']);
+
+        curl_setopt($ch, CURLOPT_POST, 1);
+        $post = [
+            trim($this->postREFamilyData['name'][1][0], "\"") => trim($this->postREFamilyData['value'][1][0], "\""),
+            trim($this->postREFamilyData['name'][1][1], "\"") => trim($this->postREFamilyData['value'][1][1], "\""),
+            trim($this->postREFamilyData['name'][1][2], "\"") => trim($this->postREFamilyData['value'][1][2], "\""),
+            '__EVENTARGUMENT' => "Orario",
+            '__EVENTTARGET' => "FAMILY",
+            //Dati dell'alunno
+            'ctl00$ContentPlaceHolderBody$txtIDAluSelected' => $this->student['num'],
+            'ctl00$ContentPlaceHolderBody$txtAluSelected' => $this->student['id'],
+        ];
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+
+        //Trova la tabella
+        $document = new Document($result);
+        $tabella = $document->find('table')[3];
+
+        // $tabella->child(0)->                      child(0)->                      child(1)->
+        //               ^^^0 lista giorni e date        ^^^Table row (obbligatorio)     ^^^1 lunedi 2 martedi...
+        // child(0)              
+        //      ^^^ 0 Nome girno della settimana / 2 data
+
+        // $tabella->child(1)->                                         child(0)->                                                                                                                   
+        //                ^^^ 1 Dati Tabella                                  ^^^Ora(pari) e materia(dispari)         
+        // child(0)->
+        //      ^^^0 (se il precedente pari)numero ora / (se il precedente dispari)  giorni della settimana 0 lunedi 1 martedi... 
+        // child(0)
+        //      ^^^ (se il precedinte è giorni della settimana) 0 materia / 2 insegnante ... 4 materia / 6 insegnante ...
+
+        $orario = [];
+
+        //Ottieni i girni e le date della settimana
+        foreach ($tabella->child(0)->child(0)->children() as $key => $value) {
+            //ignora l'elemento data
+            if ($key == 0)
+                continue; 
+
+            //ottieni giorno e data
+            $temp["day"] = $value->child(0)->text();
+            $temp["date"] = $value->child(2)->text();
+
+            //inseriscili nell'array
+            array_push($orario, $temp);
+        }
+
+        $subject = [];
+        $time = [];
+        // return $tabella->child(1)->children()[5]->children()[4]->children();
+        foreach ($tabella->child(1)->children() as $key => $value) {
+            # code...
+            if ($key%2) {
+                // Dispari Materia
+
+                $day = 0;
+                foreach ($value->children() as $key_giorni => $value_giorni) {
+                    // giorni della settimana 0 lunedi 1 martedi
+                    if (null === $subject[$day]) {
+                        $subject[$day] = [];
+                    }
+
+                    unset($temp_array);
+                    
+
+                    unset($temp);
+                    $temp = $value_giorni->child(2);
+                    if (!empty($temp)) {
+                        $temp_array["schedule"][0]["teachers"] = trim($temp->text(), "/ ");
+
+                        unset($temp);
+                        $temp = $value_giorni->child(0);
+                        $temp_array["schedule"][0]["subject"] = trim($temp->text(), "/ ");
+
+                    }
+
+                    unset($temp);
+                    $temp = $value_giorni->child(4);
+                    if (!empty($temp)) {
+                        $temp_array["schedule"][1]["subject"] = trim($temp->text(), "/ ");
+                    }
+                    
+                    unset($temp);
+                    $temp = $value_giorni->child(6);
+                    if (!empty($temp)) {
+                        $temp_array["schedule"][1]["teachers"] = trim($temp->text(), "/ ");
+                    }
+                    
+                    if (!empty($temp_array))
+                        array_push($subject[$day], $temp_array);
+
+
+                    if (empty($subject[$day]))
+                        unset($subject[$day]);
+
+                    $day++;
+                }
+
+            } else {
+                //Pari orario     
+
+                $day = 0;
+                foreach ($value->children() as $key_giorni => $value_giorni) {
+                    if ($key_giorni == 0) {
+                        continue;
+                    }
+                    // giorni della settimana 0 lunedi 1 martedi
+                    if (null === $time[$day]) {
+                        $time[$day] = [];
+                    }
+
+                    unset($temp_array);
+
+                    unset($temp);
+                    $temp = $value_giorni->child(0)->text();
+                    if (!empty($temp)) {
+                        $temp_array["start"] = explode("-", $temp)[0];
+                        $temp_array["end"] = explode("-", $temp)[1];
+                    }
+                    
+                    
+                    if (!empty($temp_array))
+                        array_push($time[$day], $temp_array);
+
+
+                    if (empty($time[$day]))
+                        unset($time[$day]);
+
+                    $day++;
+                }
+                
+                
+            }
+            // $temp["schedule"][]
+        }
+
+        foreach ($subject as $key => $value) {
+            
+            $output[$key]["schedule"] = $value;
+            $output[$key]["date"] = $orario[$key];
+            foreach ($value as $key1 => $value1) {
+                $output[$key]["schedule"][$key1]["info"] = $time[$key][$key1];
+            }
+        }
+
+        return $output;
     }
 
 }

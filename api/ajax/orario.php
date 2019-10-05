@@ -11,14 +11,18 @@ session_start(); // ready to go!
 
 //Controllo login
 if (strpos($_SERVER['PHP_SELF'], 'login') === false) {
-    if (empty($_SESSION["cookies"]["__AntiXsrfToken"]) || empty($_SESSION["cookies"]["ASP.NET_SessionId"]) || $_SESSION["expire"] < time()) {
-        header("location: /login?page=" . $_SERVER['PHP_SELF']);
+    if (empty($_SESSION["cookies"]["__AntiXsrfToken"]) || empty($_SESSION["cookies"]["ASP.NET_SessionId"]) || $_SESSION["expire"] < time()){
+        header("location: /login?page=".$_SERVER['PHP_SELF']);
         exit;
     }
 }
 
 include "../../vendor/autoload.php";
 include "../class.php";
+
+use DiDom\Document;
+use DiDom\Query;
+use DiDom\Element;
 
 $axios = new axios;
 
@@ -28,13 +32,10 @@ $axios->QuadrimestreFTAll = $_SESSION["QuadrimestreFTAll"];
 $axios->student = $_SESSION["getStudentId"][$_COOKIE['studentNumber']];
 $axios->cookies = $_SESSION["cookies"];
 
-$output = $axios->getAverageVote();
+$result = $axios->getSchedule();
+// echo "<pre>";
+// print_r($result);
+// var_dump($result);
+echo json_encode($result);
 
-echo json_encode($output);
 
-
-if ($_GET["debug"] == true) {
-    echo "<hr><pre>";
-    var_dump($output);
-    echo "</pre>";
-}

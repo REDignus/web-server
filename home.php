@@ -41,17 +41,21 @@
                             </p>
                         </div>
                         <p>Puoi contattarci su <a href="https://t.me/REDignusHelpBot">Telegram @REDignusHelpBot</a> oppure se sei un po' più vecchio stile a <a href="mailto:info@redignus.it">info@redignus.it</a></p>
-                        <p>Made with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by three students of Federico Caffe.</p>
+                        <p>Made with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by <a href="https://giuseppini.me/">Marco Giuseppini</a> of Federico Caffe.</p>
                     </div>
                     <div class="jumbotron">
                         <h3>Changelog:</h3>
                         <br>
                         <p>
+                            --------------(V 0.3.0)--------------<br>
+                            <b>Aggiunta</b> la visualizzazione dell'orario<br>
+                            <b>Aggiunti</b> gli obiettivi nei voti<br>
+                            <b>Cambiata</b> la barra per la navigazione da mobile<br>
+                            <small>- Aggiunti nuovi bug per sistemarli in futuro</small><br>
                             --------------(V 0.2.1)--------------<br>
                             <b>Aggiunta</b> la possibilità di avere più componenti nello stesso account<br>
                             <b>Aggiunta</b> una nuova visualizzazione dei voti [beta]<br>
                             <b>Aggiunta</b> una nuova visualizzazione del registro [beta]<br>
-                            <small>- Aggiunti nuovi bug per sistemarli in futuro</small><br>
                             --------------(V 0.1.2)--------------<br>
                             <b>Cambiato</b> il funzionamento "tecnico" della sidebar<br>
                             <b>Attivate</b> alcune opzioni<br>
@@ -66,7 +70,6 @@
                         <br>
                         <p>
                             - Alcuni tasti della barra laterale non funzionano (Opzioni, Github, Contatti, FAQ...)<br>
-                            - Se il tasto del menù è attivo: appare dopo qualche secondo, non istantaneamente
                         </p>
                     </div>
                 </div>

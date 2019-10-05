@@ -24,6 +24,12 @@
             </a>
         </li>
         <li>
+            <a href="orario">
+            <i class="fas fa-clock" href="orario"></i>
+            Orario
+            </a>
+        </li>
+        <li>
             <a href="assenze">
             <i class="fas fa-calendar-times" href="assenze"></i>
             Assenze

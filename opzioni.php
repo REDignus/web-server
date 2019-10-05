@@ -62,8 +62,8 @@ include "include/top.php";
                             </div>
                             <div class="col-md-3 col-sm-4">
                                 <select name="grafica-voti" id="grafica-voti">
-                                    <option value="default">Default (Scheda [v2.1])</option>
-                                    <option value="2">Scheda [v2.1]</option>
+                                    <option value="default">Default (Scheda [v2.2])</option>
+                                    <option value="2">Scheda [v2.2]</option>
                                     <option value="1">Tabella [v1.3]</option>
                                 </select>
                             </div>
@@ -176,7 +176,7 @@ include "include/top.php";
                     
                     function saveVarie() {
                         $.cookie("studentNumber", $('#studentNumber').find(":selected").val(), { expires: 365 })
-                        $.cookie("QuadrimestreFT", $('#QuadrimestreFT').find(":selected").val(), { expires: 365 })
+                        $.cookie("QuadrimestreFT", $('#QuadrimestreFT').find(":selected").val(), { expires: 7 })
 								window.location.href = "login";
                         alert("Ottimo! \nLe modifiche sono state salvate...\nAspetta un attimo");
                         
