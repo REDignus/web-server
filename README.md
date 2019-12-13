@@ -32,11 +32,10 @@
 
 ## Built With
 
-* [PHP](https://docs.microsoft.com/en-us/dotnet/csharp/ "C# Page") - The lenguage used.
-* [JS](https://html-agility-pack.net/ "HAP Page") - Web scraping
-* [CSS](https://html-agility-pack.net/ "HAP Page") - Web scraping
-* [BOOTSTRAP](https://html-agility-pack.net/ "HAP Page") - Web scraping
-* [DOOM](https://html-agility-pack.net/ "HAP Page") - Web scraping
+* [PHP](https://www.php.net "Php page") - The backend lenguage used.
+* [JS](https://www.javascript.com "Java Script page") - The forntend lenguage used.
+* [CSS](https://www.w3schools.com/css/ "Css page") - Style.
+* [BOOTSTRAP](https://getbootstrap.com/ "Bootstrap page") - Style vendor.
 
 
 
