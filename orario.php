@@ -30,15 +30,13 @@
                     <div class="jumbotron">
                         <div class="row text-center" id="dettagliGiorno"></div>
                         <div class="row text-center">
-                            <div class="col-2 text-center my-auto" onclick="changeDay(-1);"><i class="fas fa-angle-up fa-rotate-270"></i></div>
+                            <div class="col-2 text-center py-auto" onclick="changeDay(-1);"><i class="fas fa-angle-up fa-3x fa-rotate-270"></i></div>
                             <div class="col-8" id="orario">
                                 <div class="text-center"><br><h2>Caricamento</h2><i class="fas fa-circle-notch fa-spin fa-4x"></i></div>
                             </div>
-                            <div class="col-2 text-center my-auto" onclick="changeDay(+1);"><i class="fas fa-angle-up fa-rotate-90"></i></div>
+                            <div class="col-2 text-center py-auto" onclick="changeDay(+1);"><i class="fas fa-angle-up fa-3x fa-rotate-90"></i></div>
                         </div>
                     </div>
-                    <h5>Info</h5>
-                        <p><span style="color: red;">* </span>L'ultima ora termina alle 00:00 lamentatevi con la vicepresidenza non con me</p>
                 </div>
                 
                 <?php include "include/footer.php";?>
@@ -46,9 +44,6 @@
                     var plusday = 0;
                     function changeDay(day) { 
                         plusday += day;
-                        if (plusday < 0) {
-                            plusday++;
-                        }
                         stat();
                     }
                     

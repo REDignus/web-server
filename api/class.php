@@ -1,4 +1,7 @@
 <?php
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 use DiDom\Document;
 use DiDom\Query;
@@ -467,16 +470,16 @@ class axios extends setting
         //Trova la tabella
         $document = new Document($result);
         $posts = $document->find('table');
-        // var_dump($posts[3]->children()[1]->children()[0]->children()[0]->html());
+        // var_dump($posts[1]->children()[1]->children()[0]->children()[0]->html());
         //                                  ^^^giorno       ^^^0 per la data/1 per gli argomenti/2 per i compiti/3 Assenze/4 Note Dirigente/5 Note Disciplinari
         
-        if ($posts[3]->text() === "Registro di Classe - Alunno") {
-            $output["empty"] = $posts[3];
+        if ($posts[1]->text() === "Registro di Classe - Alunno") {
+            $output["empty"] = $posts[1];
             return $output;
         } else { 
             //Generazione output
             $counter = 0;
-            foreach ($posts[3]->children()[1]->children() as $key1 => $value1) { //Ogni Giorno (lunedi, martedi...)
+            foreach ($posts[1]->children()[1]->children() as $key1 => $value1) { //Ogni Giorno (lunedi, martedi...)
                 foreach ($value1->children() as $key => $value) { //Ogni colonna (argomenti, data, compiti...)
                     switch ($key) {
                         case '0': //Data
@@ -577,16 +580,16 @@ class axios extends setting
         //Trova la tabella
         $document = new Document($result);
         $posts = $document->find('table');
-        // var_dump($posts[3]->children()[1]->children()[0]->children()[0]->html());
+        // var_dump($posts[1]->children()[1]->children()[0]->children()[0]->html());
         //                                  ^^^giorno       ^^^0 per la data/1 per gli argomenti/2 per i compiti/3 Assenze/4 Note Dirigente/5 Note Disciplinari
 
         //Generazione output
-        if ($posts[3]->text() == "Registro di Classe - Alunno") {
+        if ($posts[1]->text() == "Registro di Classe - Alunno") {
             $output["empty"] = true;
             return $output;
         } else { 
             $counter = 0;
-            foreach ($posts[3]->children()[1]->children() as $key1 => $value1) { //Ogni Giorno (lunedi, martedi...)
+            foreach ($posts[1]->children()[1]->children() as $key1 => $value1) { //Ogni Giorno (lunedi, martedi...)
                 foreach ($value1->children() as $key => $value) { //Ogni colonna (argomenti, data, compiti...)
                     switch ($key) {
                         case '0': //Data
@@ -687,12 +690,12 @@ class axios extends setting
         //Trova la tabella
         $document = new Document($result);
         $posts = $document->find('table');
-        // var_dump($posts[3]->children()[1]->children()[0]->children()[0]->html());
+        // var_dump($posts[1]->children()[1]->children()[0]->children()[0]->html());
         //                                  ^^^giorno       ^^^0 per la data/1 per gli argomenti/2 per i compiti/3 Assenze/4 Note Dirigente/5 Note Disciplinari
 
         //Generazione output
         $counter = 0;
-        foreach ($posts[3]->children()[1]->children() as $key1 => $value1) { //Ogni Giorno (lunedi, martedi...)
+        foreach ($posts[1]->children()[1]->children() as $key1 => $value1) { //Ogni Giorno (lunedi, martedi...)
             if ((!empty($value1->children()[5]->text())) || (!empty($value1->children()[4]->text()))) {
                 foreach ($value1->children() as $key => $value) { //Ogni colonna (argomenti, data, compiti...)
                     switch ($key) {
@@ -767,12 +770,12 @@ class axios extends setting
         //Trova la tabella
         $document = new Document($result);
         $posts = $document->find('table');
-        // var_dump($posts[3]->children()[1]->children()[0]->children()[5]->html());
+        // var_dump($posts[1]->children()[1]->children()[0]->children()[5]->html());
         //                                  ^^^voto       ^^^0 per la data/1 materia/2 tipo/3 voto/4 commento/5 professore
 
         //Generazione output
         $counter = 0;
-        foreach ($posts[3]->children()[1]->children() as $key1 => $value1) {//Ogni singolo voto
+        foreach ($posts[1]->children()[1]->children() as $key1 => $value1) {//Ogni singolo voto
             foreach ($value1->children() as $key => $value) {//Ogni singolo campo (data, materia, voto...)
                 switch ($key) {
                     case '0'://Data
@@ -873,28 +876,41 @@ class axios extends setting
         //Trova la tabella
         $document = new Document($result);
         $posts = $document->find('table');
-        // var_dump($posts[3]->children()[2]->children()[2]->children()[0]->html());
-        //                     ^^^riga        ^^^0 per la data/1 tipo/2 giustificato
+        
 
-        //Generazione output
-        $counter = 0;
-        foreach ($posts[3]->children() as $key1 => $value1) { //Ogni singolo assenza
-            if ($key1 >= 2) {
-                foreach ($value1->children() as $key => $value) { //Ogni singolo campo (data, tipo, giustificato)
-                    switch ($key) {
-                        case '0': //Data
-                            $output[$counter]["date"] = $value->text(); //Ottieni la data
-                            break;
-                        case '1': //Tipo
-                            $output[$counter]["type"] = $value->text(); //Ottieni il tipo dell'assenza
-                            break;
-                        case '2': //Giustificato
-                            $output[$counter]["justified"] = $value->text(); //Ottieni il Giustificato
-                            break;
-                    }
-                }
-                $counter++;
+
+        
+        foreach ($posts as $key => $tabella) {
+            if ($key == 0) {
+                continue;
             }
+
+            if ("Elenco assenze da giustificare" == $tabella->parent()->parent()->child(0)->text()) {
+                //Assenze da giustificare
+
+                foreach ($tabella->child(1)->children() as $key => $giorno) {
+                    try {
+                        $temp["date"] = str_replace(chr( 194 ).chr( 160 ), '', $giorno->child(1)->text()); //Il nome contiene un carattere unicode (\u00a0 -> spazio) che va convertito prima di rimpiazzarlo nella stringa del nome
+                        $temp["type"] = str_replace(chr( 194 ).chr( 160 ), '', $giorno->child(2)->text()); //Il nome contiene un carattere unicode (\u00a0 -> spazio) che va convertito prima di rimpiazzarlo nella stringa del nome
+                    } catch (Error $e) {
+                        $temp["date"] = str_replace(chr( 194 ).chr( 160 ), '', $giorno->child(0)->text()); //Il nome contiene un carattere unicode (\u00a0 -> spazio) che va convertito prima di rimpiazzarlo nella stringa del nome
+                        $temp["type"] = str_replace(chr( 194 ).chr( 160 ), '', $giorno->child(1)->text()); //Il nome contiene un carattere unicode (\u00a0 -> spazio) che va convertito prima di rimpiazzarlo nella stringa del nome
+                    }
+
+                    $output["tojustify"][] = $temp;
+                }
+
+            } elseif ("Elenco assenze giustificate" == $tabella->parent()->parent()->child(0)->text()) {
+                //Assenze giustificate
+                
+                foreach ($tabella->child(1)->children() as $key => $giorno) {
+                    $temp["date"] = str_replace(chr( 194 ).chr( 160 ), '', $giorno->child(0)->text()); //Il nome contiene un carattere unicode (\u00a0 -> spazio) che va convertito prima di rimpiazzarlo nella stringa del nome
+                    $temp["type"] = str_replace(chr( 194 ).chr( 160 ), '', $giorno->child(1)->text()); //Il nome contiene un carattere unicode (\u00a0 -> spazio) che va convertito prima di rimpiazzarlo nella stringa del nome
+
+                    $output["justified"][] = $temp;
+                }
+            }
+
         }
         if (empty($output))
             $output["empty"] = true;
@@ -1018,14 +1034,14 @@ class axios extends setting
             //Trova la tabella
             $document = new Document($result);
             $posts = $document->find('table');
-            // var_dump($posts[3]->children()[1]->children()[0]->children()[0]->html());
+            // var_dump($posts[1]->children()[1]->children()[0]->children()[0]->html());
             //                                  ^^^giorno       ^^^0 per la data/1 per gli argomenti/2 per i compiti/3 Assenze/4 Note Dirigente/5 Note Disciplinari
             
-            if ($posts[3]->text() === "Registro di Classe - Alunno") {
-                // $output["empty"] = $posts[3];
+            if ($posts[1]->text() === "Registro di Classe - Alunno") {
+                // $output["empty"] = $posts[1];
             } else { 
                 //Generazione output
-                foreach ($posts[3]->children()[1]->children() as $key1 => $value1) { //Ogni Giorno (lunedi, martedi...)
+                foreach ($posts[1]->children()[1]->children() as $key1 => $value1) { //Ogni Giorno (lunedi, martedi...)
                     if ($lastprintday != $value1->children()[0]->text()) {
                         $lastprintday = $value1->children()[0]->text();
                         foreach ($value1->children() as $key => $value) { //Ogni colonna (argomenti, data, compiti...)
@@ -1222,7 +1238,7 @@ class axios extends setting
 
         //Trova la tabella
         $document = new Document($result);
-        $tabella = $document->find('table')[3];
+        $tabella = $document->find('table')[1];
 
         // $tabella->child(0)->                      child(0)->                      child(1)->
         //               ^^^0 lista giorni e date        ^^^Table row (obbligatorio)     ^^^1 lunedi 2 martedi...

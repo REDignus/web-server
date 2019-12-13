@@ -32,9 +32,9 @@ $axios->QuadrimestreFTAll = $_SESSION["QuadrimestreFTAll"];
 $axios->student = $_SESSION["getStudentId"][$_COOKIE['studentNumber']];
 $axios->cookies = $_SESSION["cookies"];
 
-$result = $axios->getHomeworkFull($_GET["date"]);
+$result = $axios->getAbsences();
 
+//var_dump($result);
 echo json_encode($result);
-// var_dump($result);
 
 

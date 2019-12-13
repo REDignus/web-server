@@ -46,6 +46,7 @@ if (!empty($_GET["materia"])) {
 
 
 echo json_encode($output);
+// var_dump($output);
 
 
 // if ($_GET["lastweek"] == true) {

@@ -59,5 +59,12 @@
         <li>
             <a href="#" class="article"><i class="fas fa-question"></i>FAQ</a>
         </li>
+
+    </ul>
+    <ul class="list-unstyled CTAs">
+        <li>
+        <blockquote class="blockquote-footer mb-0 text-white">“Programmare oggi è una gara tra i tecnici del software che lottano per costruire programmi migliori ed a prova di idiota,<br>
+         e l’Universo che cerca di produrre migliori e più grandi idioti.<br> Al momento, l’Universo sta vincendo.”</blockquote>
+        </li>
     </ul>
 </nav>
