@@ -63,4 +63,4 @@ Questo progetto è sotto la licenza Mozilla Public License Version 2.0 -  [LICEN
 ## Ringraziamenti
 
 * Un grazie a chiunque abbia usato il nostro software
-* Made with :heart: by Habby, Lettlyin :it: Italy - Rome ![colosseum](https://image.prntscr.com/image/LRj2toBkQkOwIhyEMPOdow.png)
+* Made with :heart: by Habby, Lettly in :it: Italy - Rome ![colosseum](https://image.prntscr.com/image/LRj2toBkQkOwIhyEMPOdow.png)
