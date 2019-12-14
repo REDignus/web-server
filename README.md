@@ -47,8 +47,8 @@ Perfavore leggi [CONTRIBUTING.md](LINK) per i dettagli su come inviarci pull e p
 
 ## Autori
 
-* **Federico Tensi**  - [Habby](https://github.com/habby1337)
 * **Marco Giuseppini** - [Lettly](https://github.com/Lettly)
+* **Federico Tensi**  - [Habby](https://github.com/habby1337)
 
 
 
@@ -58,7 +58,7 @@ Guarda anche la lista dei [contributori](https://github.com/habby1337/AxiosRE_In
 
 ## License
 
-Questo progetto è sotto la licenza Mozilla Public License Version 2.0 -  [LICENSE.md](../master/LICENSE.md) per piu dettagli
+Questo progetto è sotto la licenza GNU General Public License v3.0 -  [LICENSE.md](../master/LICENSE.md) per piu dettagli
 
 ## Ringraziamenti
 
