@@ -33,13 +33,7 @@ $axios->cookies = $_SESSION["cookies"];
                     </div>-->
                     <div class="jumbotron">
                         <h1>Benvenuto in <b>REDignus</b></h1>
-                        <div class="d-md-none">
-                            <p>
-                            <hr>
-                            <b>Trascina da sinistra verso destra per aprire il menù.<br>Forza prova non è così difficile.<br><i class="fas fa-arrow-left"></i></b>
-                            <hr>
-                            </p>
-                        </div>
+                        <hr>
                         <p>Puoi contattarci su <a href="https://t.me/REDignusHelpBot">Telegram @REDignusHelpBot</a> oppure se sei un po' più vecchio stile a <a href="mailto:info@redignus.it">info@redignus.it</a></p>
                         <p>Made with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by <a href="https://giuseppini.me/">Marco Giuseppini</a> of Federico Caffe.</p>
                     </div>
