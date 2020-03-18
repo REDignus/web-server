@@ -1,0 +1,7 @@
+#per creare l'immagine docker
+docker build -t registro .
+
+#per lanciare l'immagine
+docker run -d -p 80:80 registro
+
+
